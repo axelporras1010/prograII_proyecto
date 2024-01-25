@@ -16,10 +16,18 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Role::where('name', 'admin')->where('guard_name', 'web')->exists()) {
-            Role::create(['name' => 'admin', 'guard_name' => 'web']);
+        // Create roles if they don't exist, using only the name as the first argument
+        if (!Role::where('name', 'admin')->exists()) {
+            Role::create(['name' => 'admin']);
         }
-        $role = Role::findByName('admin', 'web');
+        if (!Role::where('name', 'student')->exists()) {
+            Role::create(['name' => 'student']);
+        }
+
+        // Correctly find roles by name, passing only the string name
+        $role = Role::findByName('admin');  // Pass only 'admin'
+        $role2 = Role::findByName('student'); // Pass only 'student'
+
         $user = User::find(1);
         $user->assignRole($role);
     }
